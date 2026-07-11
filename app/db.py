@@ -25,6 +25,68 @@ def get_connection():
         print(f"Database connection failed: {e}")
         raise
 
+# in db.py, add this function
+
+INSERT_QUERY = """
+    INSERT INTO listing_master
+        (business_name, category, city, address, pincode, phone, source)
+    VALUES
+        (%(business_name)s, %(category)s, %(city)s, %(address)s, %(pincode)s, %(phone)s, %(source)s)
+    ON DUPLICATE KEY UPDATE
+        address = VALUES(address),
+        pincode = VALUES(pincode),
+        phone = VALUES(phone)
+"""
+
+
+def insert_listings(records):
+    """
+    records: list of dicts with keys matching listing_master columns.
+    Returns (inserted_count, failed_count).
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    inserted = 0
+    failed = 0
+
+    try:
+        for record in records:
+            try:
+                cursor.execute(INSERT_QUERY, record)
+                inserted += 1
+            except Exception as e:
+                print(f"Failed to insert {record.get('business_name')}: {e}")
+                failed += 1
+
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+
+    return inserted, failed
+
+# in db.py
+
+def get_counts_by(column):
+    """
+    Returns count of listings grouped by the given column.
+    column must be one of a known safe set — never pass user input directly here.
+    """
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)  # returns rows as dicts, not tuples
+
+    query = f"SELECT {column} AS label, COUNT(*) AS count FROM listing_master GROUP BY {column} ORDER BY count DESC"
+
+    try:
+        cursor.execute(query)
+        results = cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+    return results
+
 if __name__ == "__main__":
     conn = get_connection()
     if conn.is_connected():
