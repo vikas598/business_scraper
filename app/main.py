@@ -2,8 +2,16 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List
 from db import insert_listings, get_counts_by
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Business Listings Dashboard API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Listing(BaseModel):
