@@ -47,10 +47,19 @@ def clean_record(raw):
     # --- Phone normalization ---
     if phone:
         digits_only = re.sub(r"\D", "", phone)  # strip everything except digits
-        if 7 <= len(digits_only) <= 13:
+
+        # Strip a leading '91' country code if present (e.g. "919021117668" -> "9021117668")
+        if len(digits_only) == 12 and digits_only.startswith("91"):
+            digits_only = digits_only[2:]
+
+        # Strip a single leading '0' STD/trunk prefix (e.g. "09021117668" -> "9021117668")
+        if len(digits_only) == 11 and digits_only.startswith("0"):
+            digits_only = digits_only[1:]
+
+        if len(digits_only) == 10:
             phone = digits_only
         else:
-            phone = None
+            phone = None  # doesn't match expected Indian mobile number length after cleanup
     else:
         phone = None
 

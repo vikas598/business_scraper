@@ -25,7 +25,6 @@ def get_connection():
         print(f"Database connection failed: {e}")
         raise
 
-# in db.py, add this function
 
 INSERT_QUERY = """
     INSERT INTO listing_master
@@ -66,7 +65,6 @@ def insert_listings(records):
 
     return inserted, failed
 
-# in db.py
 
 def get_counts_by(column):
     """
@@ -77,6 +75,25 @@ def get_counts_by(column):
     cursor = conn.cursor(dictionary=True)  # returns rows as dicts, not tuples
 
     query = f"SELECT {column} AS label, COUNT(*) AS count FROM listing_master GROUP BY {column} ORDER BY count DESC"
+
+    try:
+        cursor.execute(query)
+        results = cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+    return results
+
+def get_all_listings():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+        SELECT id, business_name, category, city, address, pincode, phone, source, created_at
+        FROM listing_master
+        ORDER BY id ASC
+    """
 
     try:
         cursor.execute(query)

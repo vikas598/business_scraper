@@ -3,14 +3,15 @@ import time
 import random
 import os
 
-BASE_URL = "https://www.sulekha.com/packers-and-movers/mumbai/page-{}"
+BASE_URL = "https://www.sulekha.com/packers-and-movers/{}/page-{}"
+CITIES = ["mumbai", "delhi", "chennai", "bangalore", "pune", "kolkata"]
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
 }
 
 
-def fetch_page(page_num, max_retries=3, delay=1.5):
-    url = BASE_URL.format(page_num)
+def fetch_page(city, page_num, max_retries=3, delay=1.5):
+    url = BASE_URL.format(city, page_num)
 
     for attempt in range(1, max_retries + 1):
         try:

@@ -43,6 +43,6 @@ def bulk_insert(records):
 
 
 if __name__ == "__main__":
-    records = load_json("scraper/listings_test500.json")
+    records = load_json("scraper/listings_multicity.json")
     print(f"Loaded {len(records)} records from file")
     bulk_insert(records)
