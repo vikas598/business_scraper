@@ -104,6 +104,28 @@ def get_all_listings():
 
     return results
 
+def get_category_counts(city=None):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = "SELECT category AS label, COUNT(*) AS count FROM listing_master"
+    params = ()
+
+    if city:
+        query += " WHERE city = %s"
+        params = (city,)
+
+    query += " GROUP BY category ORDER BY count DESC"
+
+    try:
+        cursor.execute(query, params)
+        results = cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+    return results
+
 if __name__ == "__main__":
     conn = get_connection()
     if conn.is_connected():

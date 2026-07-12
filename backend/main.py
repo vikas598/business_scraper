@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from db import insert_listings, get_counts_by
 from fastapi.middleware.cors import CORSMiddleware
-from db import insert_listings, get_counts_by, get_all_listings
+from db import insert_listings, get_counts_by, get_all_listings, get_category_counts
 
 
 app = FastAPI(title="Business Listings Dashboard API")
@@ -39,6 +39,7 @@ def root():
 def list_all_listings():
     return get_all_listings()
 
+
 @app.post("/listings/bulk-insert")
 def bulk_insert(payload: BulkInsertRequest):
     records = [listing.model_dump() for listing in payload.listings]
@@ -54,6 +55,12 @@ def bulk_insert(payload: BulkInsertRequest):
         "failed": failed,
         "total_received": len(records)
     }
+
+
+@app.get("/stats/category-wise")
+def category_wise_count(city: str = None):
+    return get_category_counts(city)
+
 
 @app.get("/stats/city-wise")
 def city_wise_count():

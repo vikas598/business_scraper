@@ -73,6 +73,8 @@ The React dev server (`localhost:5173`) and FastAPI backend (`127.0.0.1:8000`) a
 **7. Reaching 500+ records from a single city/category.**
 An initial full scrape of one city/category (Mumbai, packers-and-movers) yielded 470 clean records after validation and deduplication — short of the 500+ requirement. Rather than loosening validation to inflate the count, the scraper was extended to loop over multiple cities (Mumbai, Delhi, Chennai, Bangalore, Pune, Kolkata), reusing the existing fetch/clean/dedupe pipeline unchanged, which both cleared the requirement with margin and better demonstrated the scraper's generalizability.
 
+**8. Learning React while building the frontend.**
+React was new to me going into this assignment. Rather than treating it as a black box, I focused on understanding the core patterns as I built each piece — component state (`useState`), data fetching (`useEffect`), and extracting repeated logic into a reusable custom hook (`useFetchData`) once the same fetch pattern appeared across three data sources. I prioritized being able to explain and extend each piece over simply getting something on screen.
 ---
 
 ## Project Structure

@@ -22,9 +22,14 @@ const COLORS = ['#FF5A1F', '#1D4E89', '#17A398', '#F2B705', '#7B61FF', '#5B5F7A'
 
 function App() {
   const cityData = useFetchData('http://127.0.0.1:8000/stats/city-wise')
-  const categoryData = useFetchData('http://127.0.0.1:8000/stats/category-wise')
   const sourceData = useFetchData('http://127.0.0.1:8000/stats/source-wise')
   const allListings = useFetchData('http://127.0.0.1:8000/listings')
+
+  const [selectedCity, setSelectedCity] = useState("")
+  const categoryUrl = selectedCity
+    ? `http://127.0.0.1:8000/stats/category-wise?city=${encodeURIComponent(selectedCity)}`
+    : 'http://127.0.0.1:8000/stats/category-wise'
+  const categoryData = useFetchData(categoryUrl)
 
   function downloadCSV(data) {
     if (!data.length) return
@@ -55,7 +60,7 @@ function App() {
       <header className="dashboard-header">
         <div className="eyebrow">
           <span className="status-dot" />
-          DIRECTORY DATA · SULEKHA
+          DIRECTORY DATA 
         </div>
         <h1>Business Listings Dashboard</h1>
         <p>Aggregated insights from scraped business directory data</p>
@@ -84,9 +89,9 @@ function App() {
       <div className="chart-grid">
         <div className="chart-card">
           <h2>City-wise Counts</h2>
-          <ResponsiveContainer width="100%" height={320}>
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={cityData}>
-              <XAxis dataKey="label" stroke="#5B5F7A" fontSize={12} />
+             <XAxis dataKey="label" stroke="#5B5F7A" fontSize={9.8} angle={-90} textAnchor="end" interval={0} height={80}/>
               <YAxis stroke="#5B5F7A" fontSize={12} />
               <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #E4E6ED' }} />
               <Bar dataKey="count" fill="#FF5A1F" radius={[4, 4, 0, 0]} />
@@ -94,42 +99,55 @@ function App() {
           </ResponsiveContainer>
         </div>
 
-        <div className="chart-card category-card">
+       <div className="chart-card category-card">
+          <div className="table-header">
             <h2>Category-wise Counts</h2>
-            <div className="category-layout">
-              <ResponsiveContainer width="100%" height={280} className="category-chart">
-                <PieChart>
-                  <Pie
-                    data={categoryData}
-                    dataKey="count"
-                    nameKey="label"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={55}
-                    outerRadius={105}
-                  >
-                    {categoryData.map((entry, index) => (
-                      <Cell key={entry.label} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #E4E6ED' }} />
-                </PieChart>
-              </ResponsiveContainer>
-
-              <ul className="category-legend">
-                {categoryData.map((entry, index) => (
-                  <li key={entry.label}>
-                    <span
-                      className="legend-swatch"
-                      style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                    />
-                    <span className="legend-label">{entry.label}</span>
-                    <span className="legend-count">{entry.count}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <select
+              className="city-filter"
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+            >
+              <option value="">All Cities</option>
+              {cityData.map((c) => (
+                <option key={c.label} value={c.label}>{c.label}</option>
+              ))}
+            </select>
           </div>
+
+          <div className="category-layout">
+            <ResponsiveContainer width="100%" height={280} className="category-chart">
+              <PieChart>
+                <Pie
+                  data={categoryData}
+                  dataKey="count"
+                  nameKey="label"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={105}
+                >
+                  {categoryData.map((entry, index) => (
+                    <Cell key={entry.label} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #E4E6ED' }} />
+              </PieChart>
+            </ResponsiveContainer>
+
+            <ul className="category-legend">
+              {categoryData.map((entry, index) => (
+                <li key={entry.label}>
+                  <span
+                    className="legend-swatch"
+                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                  />
+                  <span className="legend-label">{entry.label}</span>
+                  <span className="legend-count">{entry.count}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
         <div className="chart-card">
           <h2>Source-wise Counts</h2>
