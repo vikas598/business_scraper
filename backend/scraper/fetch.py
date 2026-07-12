@@ -10,7 +10,7 @@ HEADERS = {
 }
 
 
-def fetch_page(city, page_num, max_retries=3, delay=1.5):
+def fetch_page(city, page_num, max_retries=2, delay=1.5):
     url = BASE_URL.format(city, page_num)
 
     for attempt in range(1, max_retries + 1):
