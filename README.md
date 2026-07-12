@@ -2,9 +2,7 @@
 
 A full-stack application that scrapes business listing data, stores it in MySQL, exposes it via a FastAPI backend, and visualizes it on a React dashboard.
 
-> **Status:** Core functionality complete — scraping, database, backend API, and frontend dashboard are all built and working end-to-end. Remaining: repo restructure to match submission spec, API edge-case testing, and demo video.
-
----
+demo_video:- https://drive.google.com/file/d/1NeGNvBRWo5nnTTON3Fx10Y7qeP4Cc7t_/view?usp=drivesdk
 
 ## Tech Stack
 
@@ -86,7 +84,7 @@ business_scraper/
   schema.sql               # MySQL schema only
   database/
     dump.sql                # Full MySQL dump (schema + data)
-  app/                       # FastAPI backend (to be renamed backend/ per submission spec)
+  backend/                       # FastAPI backend (to be renamed backend/ per submission spec)
     db.py                     # MySQL connection, insert logic, aggregation queries
     insert_data.py             # CLI script to bulk-load a scraped JSON file into MySQL
     main.py                     # FastAPI app: all endpoints
@@ -310,20 +308,3 @@ Runs at `http://localhost:5173`. Requires the backend to be running for data to 
 - Missing street-level address detail was accepted as a source limitation rather than pursued via per-listing profile page requests, given the 500+ record volume target and timeline.
 - Phone numbers were normalized to a strict 10-digit Indian mobile format; numbers not resolving cleanly to this format (e.g., unusual landline formats) were stored as `NULL` rather than kept in a non-uniform format.
 
----
-
-## Current Status
-
-- [x] Multi-city scraper built and verified (500+ records across 6 cities)
-- [x] MySQL schema created and populated (`listing_master`, with an added `pincode` column beyond the original spec)
-- [x] Bulk data load from scraped JSON into MySQL
-- [x] FastAPI: bulk-insert, all-listings, and three aggregation endpoints
-- [x] React dashboard: stat cards, bar charts, custom donut + legend, full data table, CSV export
-- [x] Full MySQL dump generated (schema + data)
-- [ ] Repo restructure to match submission spec (`app/` → `backend/`, confirm `database/` placement)
-- [ ] Manual API edge-case testing (empty table, invalid payloads)
-- [ ] Demo video (3–5 minutes)
-
----
-
-*(Final section — Demo Video link — will be added once recorded.)*
